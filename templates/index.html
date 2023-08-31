@@ -5,9 +5,9 @@
 </head>
 <body>
     <h1>Author information</h1>
-
+    <h3>Write the name of the authors that you want to crosscheck (one name per line)</h3>
     <form method="post">
-        <textarea name="search_term" rows="10" cols="50" placeholder="Enter Authors separated by :"></textarea>
+        <textarea name="search_term" rows="10" cols="50">{{ request.form['search_term'] }}</textarea>
         <br>
         <input type="submit" value="Submit">
     </form>
@@ -24,7 +24,7 @@
                 <tr>
                     <td>{{ entry.partial_string }}</td>
                     <td>{{ entry.source_code }}</td>
-                    <td> <a href="{{ entry.full_url }}">{{ entry.full_url }}</a> </td>
+                    <td> <a href="{{ entry.full_url }}" target="_blank">{{ entry.full_url }}</a> </td>
                 </tr>
             {% endfor %}
         </table>

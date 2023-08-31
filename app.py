@@ -27,26 +27,10 @@ def index():
                     if response.status_code == 200:
                         partial_string = extract_partial_string(url)
                         source_code = response.text
-                        try:
-                            source_code = source_code.split('results-amount-container')[1].split('</div>')[0]
-                            source_code = source_code.split('<span')[1].split('</span>')[0].split('>')[1]
-                        except:
-                            source_code = '0'
-                        """
-                         class="value">23
-                        for line in range(len(source_code)):
-                            if source_code[line][0]=='-': continue
-                            print(line, source_code[line].split('</div>')[0])
-                        """
-                        #source_code = source_code.split('<div class="results-amount">')[1].split('</div>')[0]
-                        #print('+++++++++++++')
-                        #print(source_code)
-                        #print('-------------')
-
-                        #source_code = response.text[:300] if len(response.text) > 300 else response.text
+                        nResults = scripts.find_nShared(source_code)
                         result.append({
                             'partial_string': partial_string,
-                            'source_code': source_code,
+                            'source_code': nResults,
                             'full_url': url
                         })
                 except requests.RequestException:
