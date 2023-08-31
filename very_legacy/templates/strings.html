@@ -1,0 +1,15 @@
+<!-- templates/source_strings.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Source Code Strings</title>
+</head>
+<body>
+    <h1>Source Code Strings</h1>
+    <ul>
+        {% for source in source_strings %}
+        <li><pre>{{ source }}</pre></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

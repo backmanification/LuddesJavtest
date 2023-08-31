@@ -1,0 +1,15 @@
+<!-- templates/urls.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated URLs</title>
+</head>
+<body>
+    <h1>Generated URLs</h1>
+    <ul>
+        {% for url in urls %}
+        <li><a href="{{ url_for('fetch_source', index=loop.index0, urls=urls) }}">{{ url }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

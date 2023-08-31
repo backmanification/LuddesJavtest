@@ -1,0 +1,22 @@
+import requests
+
+def get(url):
+    try:
+        res = requests.get(url)
+        return res.json()
+    except:
+        return False
+
+data = get('https://pubmed.ncbi.nlm.nih.gov/?term=ludvig+backman+and+patrik+danielson')
+print(data)
+
+def unscramble(searchstr):
+    searchstr = searchstr.replace(", ",",")
+    test_str = searchstr.replace(" ","+")
+    authors = test_str.split(",")
+    returnstrs = []
+    if len(authors)<2: return False
+    for i in range(authors):
+        for j in range(i,authors):
+            returnstrs.append(f'{authors[i]}+and+{authors[j]}')
+    return returnstrs

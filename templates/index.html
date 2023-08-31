@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jävtest PubMed</title>
+</head>
+<body>
+    <h1>Author information</h1>
+
+    <form method="post">
+        <textarea name="search_term" rows="10" cols="50" placeholder="Enter Authors separated by :"></textarea>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if result %}
+        <h2>Results:</h2>
+        <table border="1">
+            <tr>
+                <th>Author combination</th>
+                <th>Shared papers</th>
+                <th>URL</th>
+            </tr>
+            {% for entry in result %}
+                <tr>
+                    <td>{{ entry.partial_string }}</td>
+                    <td>{{ entry.source_code }}</td>
+                    <td> <a href="{{ entry.full_url }}">{{ entry.full_url }}</a> </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>

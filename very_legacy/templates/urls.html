@@ -1,0 +1,43 @@
+<!-- templates/urls.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated URLs</title>
+</head>
+<body>
+    <h1>Generated URLs</h1>
+    <ul>
+        {% for url in urls %}
+        <li><a href="{{ url_for('fetch_source', url=url) }}">{{ url }}</a></li>
+        {% endfor %}
+    </ul>
+    <form id="generate-source-form">
+        <input type="hidden" id="source-urls" name="urls" value="{{ urls|join(',') }}">
+        <button type="button" id="generate-source-button">Generate Source Strings</button>
+    </form>
+    <div id="source-results"></div>
+
+    <script>
+        document.getElementById("generate-source-button").addEventListener("click", function() {
+            const urls = document.getElementById("source-urls").value.split(",");
+            fetch("/generate_source_strings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ urls }),
+            })
+            .then(response => response.json())
+            .then(sourceStrings => {
+                const resultsDiv = document.getElementById("source-results");
+                resultsDiv.innerHTML = "";
+                for (const source of sourceStrings) {
+                    const pre = document.createElement("pre");
+                    pre.innerText = source;
+                    resultsDiv.appendChild(pre);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
