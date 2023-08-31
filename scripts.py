@@ -29,9 +29,11 @@ def unscramble(searchstr):
     returnterms = []
     if len(authors)<2: return authors
     for i in range(len(authors)):
-        if authors[i] == "": continue
+        if authors[i] == "" or authors[i] == "\r": continue
+        print(authors[i])
+        print(type(authors[i]))
         for j in range(i+1,len(authors)):
-            if authors[j] == "": continue
+            if authors[j] == "" or authors[j] == "\r": continue
             returnterms.append(f'{authors[i]}+and+{authors[j]}')
     print(returnterms)
     return returnterms
