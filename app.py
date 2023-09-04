@@ -1,82 +1,43 @@
 from flask import Flask, render_template, request
-import requests
-import re
+from itertools import combinations
 import scripts
-
-app = Flask(__name__)
-
-def extract_partial_string(url):
-    search = url.split('=')[1]
-    search = search.replace('+',' ')
-    return search
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    result = []
-
-    if request.method == 'POST':
-        search_term = request.form['search_term']
-        terms = scripts.unscramble(search_term)
-        urls = scripts.make_urls(terms)
-
-        for url in urls:
-            url = url.strip()
-            if url:
-                try:
-                    response = requests.get(url)
-                    if response.status_code == 200:
-                        partial_string = extract_partial_string(url)
-                        source_code = response.text
-                        nResults = scripts.find_nShared(source_code)
-                        result.append({
-                            'partial_string': partial_string,
-                            'source_code': nResults,
-                            'full_url': url
-                        })
-                except requests.RequestException:
-                    pass
-
-    return render_template('index.html', result=result)
-
-if __name__ == '__main__':
-    app.run(debug=False)
-
-"""
-from flask import Flask, render_template, request
 import requests
-import scripts
-from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    result = []
+    result = {}
 
     if request.method == 'POST':
-        search_term = request.form['search_term']
-        terms = scripts.unscramble(search_term)
-        urls = scripts.make_urls(terms)
+        fieldCount = len([key for key in request.form if key.startswith('search')])
+        search_terms = []
+        for i in range(1, fieldCount + 1):
+            search_term = request.form.get(f'search{i}', '').strip()
+            if search_term:
+                search_terms.append(search_term)
 
-        for url in urls:
-            url = url.strip()
-            if url:
-                try:
-                    response = requests.get(url)
-                    if response.status_code == 200:
-                        soup = BeautifulSoup(response.content, 'html.parser')
-                        title = soup.title.string if soup.title else 'N/A'
-                        source_code = response.text[:300] if len(response.text) > 300 else response.text
-                        result.append({
-                            'partial_string': title,
-                            'source_code': source_code,
-                            'full_url': url
-                        })
-                except requests.RequestException:
-                    pass
+        # Generate pairs of search terms
+        search_term_pairs = list(combinations(search_terms, 2))
+        
+        for pair in search_term_pairs:
+            search_result = "N/A"
+            url= scripts.make_url(pair)
+            try:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    source_code = response.text
+                    search_result = scripts.find_nShared(source_code)
+            except requests.RequestException:
+                pass
+
+            # You can also replace the placeholder URL with the actual URL you want to display
+            result[f'{pair[0]} + {pair[1]}'] = {
+                'values': search_result,
+                'url': url  # Replace this with the actual URL
+            }
 
     return render_template('index.html', result=result)
 
 if __name__ == '__main__':
     app.run(debug=True)
-"""

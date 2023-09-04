@@ -1,33 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Jävtest PubMed</title>
+    <title>Search Words</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            let fieldCount = 1;
+
+            // Add a new search field
+            $("#add-field").click(function () {
+                fieldCount++;
+                const newField = `
+                    <input type="text" name="search${fieldCount}" placeholder="Enter Search Term ${fieldCount}">
+                    <br>`;
+                $("#search-fields").append(newField);
+            });
+        });
+    </script>
 </head>
 <body>
-    <h1>Author information</h1>
-    <h3>Write the name of the authors that you want to crosscheck (one name per line)</h3>
+    <h1>Search Words</h1>
+
     <form method="post">
-        <textarea name="search_term" rows="10" cols="50">{{ request.form['search_term'] }}</textarea>
-        <br>
-        <input type="submit" value="Submit">
+        <div id="search-fields">
+            <input type="text" name="search1" placeholder="Enter Search Term 1">
+            <br>
+        </div>
+        <button type="button" id="add-field">Add Field</button>
+        <input type="submit" value="Search">
     </form>
 
     {% if result %}
         <h2>Results:</h2>
-        <table border="1">
+        <table>
             <tr>
-                <th>Author combination</th>
-                <th>Shared papers</th>
-                <th>URL</th>
+                <th>Search Combination</th>
+                <th>Values</th>
+                <th>Full URL</th>
             </tr>
-            {% for entry in result %}
+            {% for pair, search_result in result.items() %}
                 <tr>
-                    <td>{{ entry.partial_string }}</td>
-                    <td>{{ entry.source_code }}</td>
-                    <td> <a href="{{ entry.full_url }}" target="_blank">{{ entry.full_url }}</a> </td>
+                    <td>{{ pair }}</td>
+                    <td>{{ search_result['values'] }}</td>
+                    <td><a href="{{ search_result['url'] }}" target="_blank">"{{ search_result['url'] }}</a></td>  <!-- Replace this with the actual URL -->
                 </tr>
             {% endfor %}
         </table>
     {% endif %}
 </body>
 </html>
+
+

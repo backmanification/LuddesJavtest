@@ -1,5 +1,3 @@
-import requests
-
 def find_nShared(source_code):
     try:
         source_code = source_code.split('results-amount-container')[1].split('</div>')[0]
@@ -8,8 +6,6 @@ def find_nShared(source_code):
     except:
         if "Found 1 result for" in source_code: return '1'
         return '0'
-
-
 
 def get(url):
     try:
@@ -37,6 +33,9 @@ def unscramble(searchstr):
             returnterms.append(f'{authors[i]}+and+{authors[j]}')
     print(returnterms)
     return returnterms
+
+def make_url(searchpair):
+    return f'https://pubmed.ncbi.nlm.nih.gov/?term={searchpair[0]}+and+{searchpair[1]}'
 
 def make_urls(searchlist):
     urllist=[]
