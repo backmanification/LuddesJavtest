@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>                                                                                                                                
 <html>
 <head>
     <title>Search Words</title>
@@ -33,8 +33,10 @@
 
     <form method="post">
         <div id="search-fields">
-            <input type="text" name="search1" placeholder="Enter Search Term 1">
+            {% for i in range(1, fieldCount + 1) %}
+            <input type="text" name="search{{ i }}" placeholder="Enter Search Term {{ i }}" value="{{ search_terms[i-1] if i-1 < len(search_terms) else '' }}">
             <br>
+            {% endfor %}
         </div>
         <button type="button" id="add-field">Add Field</button>
         <input type="submit" value="Search">
@@ -52,12 +54,10 @@
                 <tr>
                     <td>{{ pair }}</td>
                     <td>{{ search_result['values'] }}</td>
-                    <td><a href="{{ search_result['url'] }}" target="_blank">"{{ search_result['url'] }}</a></td>  <!-- Replace this with the actual URL -->
+                    <td><a href="{{ search_result['url'] }}" target="_blank">{{ search_result['url'] }}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% endif %}
 </body>
-</html>
-
-
+</html>     
