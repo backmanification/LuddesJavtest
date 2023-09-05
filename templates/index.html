@@ -21,7 +21,7 @@
             function addSearchField() {
                 fieldCount++;
                 const newField = `
-                    <input type="text" name="search${fieldCount}" placeholder="Enter Search Term ${fieldCount}">
+                    <input type="text" name="search${fieldCount}" placeholder="Enter Author ${fieldCount-1}">
                     <br>`;
                 $("#search-fields").append(newField);
             }
@@ -38,7 +38,7 @@
             function updateResults(result) {
                 var $resultsTable = $("#results-table");
                 $resultsTable.empty();
-
+		$resultsTable.append('<tr><th>Authors</th><th>Shared Papers</th><th>Full URL</th></tr>');
                 $.each(result, function(pair, search_result) {
                     $resultsTable.append('<tr>' +
                         '<td>' + pair + '</td>' +
@@ -79,11 +79,6 @@
     <!-- Results Section -->
     <h2>Results:</h2>
     <table id="results-table">
-        <tr>
-            <th>Search Combination</th>
-            <th>Values</th>
-            <th>Full URL</th>
-        </tr>
     </table>
 
 </body>
