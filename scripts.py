@@ -21,7 +21,10 @@ def get_pubmed_nArticles(query):
         pass
     if '<PhraseNotFound>' in source_code:
         return 0
-    nArticles = source_code.split('<Count>')[1].split('</Count>')[0]
+    try:
+        nArticles = source_code.split('<Count>')[1].split('</Count>')[0]
+    except:
+        nArticles = source_code
     return nArticles
 
 def get_google_scholar_nArticles(query):

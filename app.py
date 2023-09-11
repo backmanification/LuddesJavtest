@@ -15,6 +15,12 @@ def search():
     search_terms = []
     author_options = []
     db = ""
+
+    """
+    Add following functionality:
+    - If only one name, show all their results
+    - Check to see if each name has any hit. If the result is 0, suggest to check spelling
+    """
     
     # Retrieve values from all input fields dynamically
     search_terms = [request.form.get(f'search{i}', '').strip() for i in range(1, 101)]  # Assume a maximum of 100 search fields
