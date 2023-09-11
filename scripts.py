@@ -28,7 +28,7 @@ def get_google_scholar_nArticles(query):
     source_code = ""
     if True:#try:
         response = requests.get(query)
-        print("HERES WHERE IT HAPPENS!!!!!",response.status_code == 200:)
+        print("HERES WHERE IT HAPPENS!!!!!",response.status_code)
         if response.status_code == 200:
             source_code = response.text
         elif response.status_code == 500:
