@@ -1,0 +1,47 @@
+        <tr>
+            <th>Authors</th>
+            <th>Shared Papers</th>
+            <th>Full URL</th>
+        </tr>
+
+
+
+
+
+
+<head>
+    <title>Search Words</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            let fieldCount = 1;
+
+            // Add a new search field
+            $("#add-field").click(function () {
+                fieldCount++;
+                const newField = `
+                    <input type="text" name="search${fieldCount}" placeholder="Enter Search Term ${fieldCount}">
+                    <br>`;
+                $("#search-fields").append(newField);
+            });
+
+            // Preserve search terms on form submit
+            $("form").submit(function () {
+                $("#search-fields input[type='text']").each(function () {
+                    const name = $(this).attr("name");
+                    $(this).attr("value", $(this).val());
+                });
+            });
+        });
+    </script>
+</head>

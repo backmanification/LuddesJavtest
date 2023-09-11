@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Words</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+        let fieldCount = 1;
+
+        // Function to add a new search field
+        function addSearchField() {
+            fieldCount++;
+            const newField = `
+                <input type="text" name="search${fieldCount}" placeholder="Enter Search Term ${fieldCount - 1}">
+                <br>`;
+            $("#search-fields").append(newField);
+        }
+
+        // Add a new search field when the page loads
+        addSearchField();
+
+        // Add a new search field when the "Add Field" button is clicked
+        $("#add-field").click(function () {
+            addSearchField();
+        });
+
+        // Function to update the results section
+        function updateResults(result) {
+            var $resultsTable = $("#results-table");
+            $resultsTable.empty();
+
+            $.each(result, function(pair, search_result) {
+                $resultsTable.append('<tr>' +
+                    '<td>' + pair + '</td>' +
+                    '<td>' + search_result.values + '</td>' +
+                    '<td><a href="' + search_result.url + '" target="_blank">' + search_result.url + '</a></td>' +
+                '</tr>');
+            });
+        }
+
+        // Handle form submission using AJAX
+        $("form").submit(function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            $.ajax({
+                type: 'POST',
+                url: '/search',
+                data: $(this).serialize(), // Serialize form data
+                success: function (result) {
+                    // Update the results section
+                updateResults(result);
+                }
+		});
+		});
+		});
+    </script>
+</head>
+<body>
+    <h1>Search Words</h1>
+
+    <form method="post">
+        <div id="search-fields">
+            <!-- Include input fields for search terms -->
+        </div>
+        <button type="button" id="add-field">Add Field</button>
+        <input type="submit" value="Search">
+    </form>
+
+    <!-- Results Section -->
+    <h2>Results:</h2>
+    <table id="results-table">
+        <tr>
+            <th>Search Combination</th>
+            <th>Values</th>
+            <th>Full URL</th>
+        </tr>
+    </table>
+
+</body>
+</html>
