@@ -1,3 +1,5 @@
+import requests
+
 def find_nShared(source_code):
     try:
         source_code = source_code.split('results-amount-container')[1].split('</div>')[0]
@@ -7,9 +9,45 @@ def find_nShared(source_code):
         if "Found 1 result for" in source_code: return '1'
         return '0'
 
+def get_pubmed_nArticles(query):
+    try:
+        response = requests.get(query)
+        if response.status_code == 200:
+            source_code = response.text
+    except requests.RequestException:
+        return 0
+    if '<PhraseNotFound>' in source_code:
+        return 0
+    nArticles = source_code.split('<Count>')[1].split('</Count>')[0]
+    return nArticles
+
+def get_google_scholar_nArticles(query):
+    try:
+        response = requests.get(query)
+        if response.status_code == 200:
+            source_code = response.text
+    except requests.RequestException:
+        return 0
+    nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
+
+    print(source_code)
+    return nArticles
+
+
 def make_url(searchpair, db="pubmed"):
     if db == "google_scholar":
-        url = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%252C5&q=+author%3A"{searchpair[0]}"+author%3A"{searchpair[1]}"&btnG='
+        url = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='
+        query = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='
+        nArticles = get_google_scholar_nArticles(query)
+
+        
+
     if db == "pubmed":
+        #for i in range(len(searchpair)):
+        #    searchpair[i] = searchpair[i].replace(' ','+')
+        query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={searchpair[0]}+and+{searchpair[1]}'
+        nArticles = get_pubmed_nArticles(query)
         url = f'https://pubmed.ncbi.nlm.nih.gov/?term={searchpair[0]}+and+{searchpair[1]}'
-    return f'https://pubmed.ncbi.nlm.nih.gov/?term={searchpair[0]}+and+{searchpair[1]}'
+    if db == "inspire_hep":
+        url = f'https://inspirehep.net/literature?sort=mostrecent&size=25&page=1&q=find%20a%20{searchpair[0]}%20and%20a%20{searchpair[1]}'
+    return url,nArticles

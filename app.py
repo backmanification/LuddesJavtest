@@ -13,19 +13,39 @@ def index():
 def search():
     result = {}
     search_terms = []
-
+    author_options = []
+    db = ""
+    
     # Retrieve values from all input fields dynamically
     search_terms = [request.form.get(f'search{i}', '').strip() for i in range(1, 101)]  # Assume a maximum of 100 search fields
-
-    # Remove empty search terms
-    search_terms = [term for term in search_terms if term]
+    author_options =  [request.form.get(f'option{i}', '').strip() for i in range(1, 101)]
+    for key, val in request.form.items():
+        print(key,val)
+    db = request.form.get('search-option')
+    # Remove empty search terms and options
+    t_st = []
+    t_ao =[]
+    for i in range(len(search_terms)):
+        if search_terms[i] != '':
+            t_st.append(search_terms[i])
+            t_ao.append(author_options[i])
+    search_terms = t_st
+    author_options = t_ao
 
     # Generate pairs of search terms
-    search_term_pairs = list(combinations(search_terms, 2))
+    search_term_pairs = []
+    for i in range(len(search_terms)):
+        for j in range(i+1,len(search_terms)):
+            if t_ao[i]=='def' and t_ao[j]=='def': continue
+            search_term_pairs.append((t_st[i],t_st[j]))
+    #search_term_pairs = list(combinations(search_terms, 2))
 
+    print("AO:",author_options, "\nST:", search_terms,  "\nDB:", db)
+    
     for pair in search_term_pairs:
         search_result = "N/A"
-        url = scripts.make_url(pair)
+        url,nArticles = scripts.make_url(pair, db)
+        """
         try:
             response = requests.get(url)
             if response.status_code == 200:
@@ -33,10 +53,11 @@ def search():
                 search_result = scripts.find_nShared(source_code)
         except requests.RequestException:
             pass
-
+        """
+        
         # You can also replace the placeholder URL with the actual URL you want to display
         result[f'{pair[0]} + {pair[1]}'] = {
-            'values': search_result,
+            'values': nArticles,
             'url': url
         }
 
