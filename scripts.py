@@ -10,6 +10,7 @@ def find_nShared(source_code):
         return '0'
 
 def get_pubmed_nArticles(query):
+    source_code = ""
     try:
         response = requests.get(query)
         if response.status_code == 200:
@@ -24,6 +25,7 @@ def get_pubmed_nArticles(query):
     return nArticles
 
 def get_google_scholar_nArticles(query):
+    source_code = ""
     try:
         response = requests.get(query)
         if response.status_code == 200:
@@ -33,7 +35,7 @@ def get_google_scholar_nArticles(query):
     except requests.RequestException:
         pass
     nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
-
+    print("nArticles",nArticles)
     #print(source_code)
     return nArticles
 
@@ -41,8 +43,7 @@ def get_google_scholar_nArticles(query):
 def make_url(searchpair, db="pubmed"):
     if db == "google_scholar":
         url = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='
-        query = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='
-        nArticles = get_google_scholar_nArticles(query)
+        nArticles = get_google_scholar_nArticles(url)
 
         
 
