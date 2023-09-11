@@ -30,7 +30,7 @@ def get_google_scholar_nArticles(query):
         return 0
     nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
 
-    print(source_code)
+    #print(source_code)
     return nArticles
 
 
