@@ -14,10 +14,10 @@ def get_pubmed_nArticles(query):
         response = requests.get(query)
         if response.status_code == 200:
             source_code = response.text
-        else:
-            return 0
+        elif response.status_code == 500:
+            source_code = f'<Count>Server Error</Count>'
     except requests.RequestException:
-        return 0
+        pass
     if '<PhraseNotFound>' in source_code:
         return 0
     nArticles = source_code.split('<Count>')[1].split('</Count>')[0]
@@ -28,8 +28,10 @@ def get_google_scholar_nArticles(query):
         response = requests.get(query)
         if response.status_code == 200:
             source_code = response.text
+        elif response.status_code == 500:
+            source_code = f'<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">Server Error</div>'
     except requests.RequestException:
-        return 0
+        pass
     nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
 
     #print(source_code)
