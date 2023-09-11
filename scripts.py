@@ -26,13 +26,14 @@ def get_pubmed_nArticles(query):
 
 def get_google_scholar_nArticles(query):
     source_code = ""
-    try:
+    if True:#try:
         response = requests.get(query)
+        print(response.status_code == 200:)
         if response.status_code == 200:
             source_code = response.text
         elif response.status_code == 500:
             source_code = f'<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">Server Error</div>'
-    except requests.RequestException:
+    else:#except requests.RequestException:
         pass
     try:
         nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
