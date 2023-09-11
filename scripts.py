@@ -14,6 +14,8 @@ def get_pubmed_nArticles(query):
         response = requests.get(query)
         if response.status_code == 200:
             source_code = response.text
+        else:
+            return 0
     except requests.RequestException:
         return 0
     if '<PhraseNotFound>' in source_code:
