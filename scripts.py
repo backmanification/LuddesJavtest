@@ -34,7 +34,10 @@ def get_google_scholar_nArticles(query):
             source_code = f'<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">Server Error</div>'
     except requests.RequestException:
         pass
-    nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
+    try:
+        nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
+    except:
+        nArticles = 0
     print("nArticles",nArticles)
     #print(source_code)
     return nArticles
