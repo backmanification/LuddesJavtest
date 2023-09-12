@@ -1,17 +1,18 @@
+from globalthings import *
 import requests
 import random as rd
 from time import sleep
-#from scholarly import scholarly
-#from scholarly import ProxyGenerator
-#from proxy_randomizer import RegisteredProviders
-#from proxy_randomizer.proxy import Anonymity
+from scholarly import scholarly
+from scholarly import ProxyGenerator
+from proxy_randomizer import RegisteredProviders
+from proxy_randomizer.proxy import Anonymity
 
-#rp = RegisteredProviders()
-#rp.parse_providers()
+rp = RegisteredProviders()
+rp.parse_providers()
 
-#anonymous_proxies = list(
-#    filter(lambda proxy: proxy.anonymity == Anonymity.ANONYMOUS, rp.proxies)
-#)
+anonymous_proxies = list(
+    filter(lambda proxy: proxy.anonymity == Anonymity.ANONYMOUS, rp.proxies)
+)
 
 def find_nShared(source_code):
     try:
@@ -68,21 +69,19 @@ def get_google_scholar_nArticles_scholarly(pair,url):
 def get_google_scholar_nArticles(query):
     source_code = ""
     if True:#try:
-        #random_number = rd.randint(0,len(anonymous_proxies)-1)
-        #print("random",random_number)
         """
         for it in range(len(anonymous_proxies)):
             try:
                 proxies = {'https' : anonymous_proxies[it].get_proxy()}
                 print("we got a proxy! Lets go!")
-                response = requests.get(query, proxies = proxies)
+                response = requests.get(query, proxies = proxies, headers=headerlist[1])
                 print(f"this number works!!!: {it}")
                 break
             except:
-                print(f"not number [it]")
+                print(f"not number {it}")
             print(f'{it}/{len(anonymous_proxies)}')
         """
-        response = requests.get(query)
+        response = requests.get(query, headers=headerlist[1])
         print("HERES WHERE IT HAPPENS!!!!!",response.status_code)
         sleep(0.5)
         if response.status_code == 200:
@@ -102,7 +101,7 @@ def get_google_scholar_nArticles(query):
 
 def make_url(searchpair, db="pubmed"):
     if db == "google_scholar":
-        url = f'https://scholar.google.co.uk/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='.replace(' ','+')
+        url = f'https://scholar.google.fr/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='.replace(' ','+')
         nArticles = get_google_scholar_nArticles(url)
         #nArticles = get_google_scholar_nArticles_scholarly(searchpair, url)
 
@@ -122,36 +121,5 @@ def make_url(searchpair, db="pubmed"):
 
 
 
-def avcd():
-    """
-    headerlist = []
-    headerlist.append( {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'Cache-Control': 'max-age=0',
-        'Referer': 'https://scholar.google.com/',
-    })
-    headerlist.append( {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-        "Cache-Control": "max-age=0",
-        "Referer": "https://scholar.google.com/",
-    } )
-    """
-    return 0
+
+
