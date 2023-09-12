@@ -1,4 +1,5 @@
 import requests
+from time import sleep
 
 def find_nShared(source_code):
     try:
@@ -9,16 +10,24 @@ def find_nShared(source_code):
         if "Found 1 result for" in source_code: return '1'
         return '0'
 
-def get_pubmed_nArticles(query):
-    source_code = ""
+def get_pubmed_source(query, count=0):
     try:
         response = requests.get(query)
+        print("status code", response.status_code)
         if response.status_code == 200:
-            source_code = response.text
-        elif response.status_code == 500:
-            source_code = f'<Count>Server Error</Count>'
+            return response.text
+        else:
+            if count > 2: return f'Error {response.status_code}'
+            return get_pubmed_source(query, count+1)
+
     except requests.RequestException:
+        print("crash")
         pass
+    return ""
+    
+def get_pubmed_nArticles(query):
+    sleep(0.33)
+    source_code = get_pubmed_source(query)
     if '<PhraseNotFound>' in source_code:
         return 0
     try:
