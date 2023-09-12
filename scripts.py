@@ -46,13 +46,22 @@ def get_google_scholar_nArticles_scholarly(pair,url):
     return ""
 
 def get_google_scholar_nArticles(query):
-    headers = {
+    headerlist = []
+    headerlist.append( {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br'
-        }
-    headers = {
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Cache-Control': 'max-age=0',
+        'Referer': 'https://scholar.google.com/',
+    })
+    headerlist.append( {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
@@ -64,11 +73,12 @@ def get_google_scholar_nArticles(query):
         "Sec-Fetch-Site": "none",
         "Sec-Fetch-User": "?1",
         "Cache-Control": "max-age=0",
-    }
+        "Referer": "https://scholar.google.com/",
+    } )
     
     source_code = ""
     if True:#try:
-        response = requests.get(query, headers=headers)
+        response = requests.get(query, headers=headerlist[0])
         print("HERES WHERE IT HAPPENS!!!!!",response.status_code)
         sleep(0.5)
         if response.status_code == 200:
@@ -80,7 +90,7 @@ def get_google_scholar_nArticles(query):
     try:
         nArticles = source_code.split('<div id=\"gs_ab_md\"><div class=\"gs_ab_mdw\">')[1].split('</div>')[0]
     except:
-        nArticles = 0
+        nArticles = response.status_code
     print("nArticles",nArticles)
     #print(source_code)
     return nArticles
