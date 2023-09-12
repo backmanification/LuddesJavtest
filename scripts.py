@@ -2,6 +2,7 @@ from globalthings import *
 import requests
 import random as rd
 from time import sleep
+"""
 from scholarly import scholarly
 from scholarly import ProxyGenerator
 from proxy_randomizer import RegisteredProviders
@@ -13,7 +14,7 @@ rp.parse_providers()
 anonymous_proxies = list(
     filter(lambda proxy: proxy.anonymity == Anonymity.ANONYMOUS, rp.proxies)
 )
-
+"""
 def find_nShared(source_code):
     try:
         source_code = source_code.split('results-amount-container')[1].split('</div>')[0]
