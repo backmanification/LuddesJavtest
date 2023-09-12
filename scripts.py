@@ -11,7 +11,7 @@ def find_nShared(source_code):
         return '0'
 
 def get_pubmed_source(query, count=0):
-    try:
+    if True:#try:
         response = requests.get(query)
         print("status code", response.status_code)
         if response.status_code == 200:
@@ -20,7 +20,7 @@ def get_pubmed_source(query, count=0):
             if count > 2: return f'Error {response.status_code}'
             return get_pubmed_source(query, count+1)
 
-    except requests.RequestException:
+    else:#except requests.RequestException:
         print("crash")
         pass
     return ""
