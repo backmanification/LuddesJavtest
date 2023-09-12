@@ -111,6 +111,7 @@ def make_url(searchpair, db="pubmed"):
         #for i in range(len(searchpair)):
         #    searchpair[i] = searchpair[i].replace(' ','+')
         query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={searchpair[0]}+and+{searchpair[1]}'
+        print(query)
         nArticles = get_pubmed_nArticles(query.replace(' ','+'))
         url = f'https://pubmed.ncbi.nlm.nih.gov/?term={searchpair[0]}+and+{searchpair[1]}'
         url = url.replace(' ','+')

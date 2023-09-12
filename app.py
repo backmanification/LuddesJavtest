@@ -40,12 +40,12 @@ def search():
 
     # Generate pairs of search terms
     search_term_pairs = []
-    if len(search_terms)==1: search_pair = [search_terms[0], '']
     for i in range(len(search_terms)):
         for j in range(i+1,len(search_terms)):
             if (t_ao[i]=='def' and t_ao[j]=='def') or (t_ao[i]=='opp' and t_ao[j]=='opp'): continue
             search_term_pairs.append((t_st[i],t_st[j]))
     #search_term_pairs = list(combinations(search_terms, 2))
+    if len(t_st)==1: search_term_pairs = [[t_st[0], '']]
 
     print("AO:",author_options, "\nST:", search_terms,  "\nDB:", db)
     
