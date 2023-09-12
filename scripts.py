@@ -3,8 +3,8 @@ import requests
 import random as rd
 from time import sleep
 
-from scholarly import scholarly
-from scholarly import ProxyGenerator
+#from scholarly import scholarly
+#from scholarly import ProxyGenerator
 """
 from proxy_randomizer import RegisteredProviders
 from proxy_randomizer.proxy import Anonymity
