@@ -2,9 +2,10 @@ from globalthings import *
 import requests
 import random as rd
 from time import sleep
-"""
+
 from scholarly import scholarly
 from scholarly import ProxyGenerator
+"""
 from proxy_randomizer import RegisteredProviders
 from proxy_randomizer.proxy import Anonymity
 
@@ -59,7 +60,7 @@ def get_google_scholar_nArticles_scholarly(pair,url):
     print("yoyoyo")
     author = next(query)
     print("gotem")
-    author = scholarly.fill(author, sections=['coauthors','publications'])
+    author = scholarly.fill(author, sections=['coauthors'])
     #query = scholarly.search_pubs('Literature Review of Methods to Translate Health-Related Quality of Life Questionnaires for Use in Multinational Clinical Trials', patents = False, citations = False, year_low = None, year_high = None) 
     #query = scholarly.search_author_custom_url(urlext)
 
@@ -102,9 +103,9 @@ def get_google_scholar_nArticles(query):
 
 def make_url(searchpair, db="pubmed"):
     if db == "google_scholar":
-        url = f'https://scholar.google.fr/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='.replace(' ','+')
-        nArticles = get_google_scholar_nArticles(url)
-        #nArticles = get_google_scholar_nArticles_scholarly(searchpair, url)
+        url = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='.replace(' ','+')
+        #nArticles = get_google_scholar_nArticles(url)
+        nArticles = get_google_scholar_nArticles_scholarly(searchpair, url)
 
     if db == "pubmed":
         #for i in range(len(searchpair)):
