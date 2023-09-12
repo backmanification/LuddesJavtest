@@ -3,15 +3,15 @@ import random as rd
 from time import sleep
 #from scholarly import scholarly
 #from scholarly import ProxyGenerator
-from proxy_randomizer import RegisteredProviders
-from proxy_randomizer.proxy import Anonymity
+#from proxy_randomizer import RegisteredProviders
+#from proxy_randomizer.proxy import Anonymity
 
-rp = RegisteredProviders()
-rp.parse_providers()
+#rp = RegisteredProviders()
+#rp.parse_providers()
 
-anonymous_proxies = list(
-    filter(lambda proxy: proxy.anonymity == Anonymity.ANONYMOUS, rp.proxies)
-)
+#anonymous_proxies = list(
+#    filter(lambda proxy: proxy.anonymity == Anonymity.ANONYMOUS, rp.proxies)
+#)
 
 def find_nShared(source_code):
     try:
@@ -70,6 +70,7 @@ def get_google_scholar_nArticles(query):
     if True:#try:
         #random_number = rd.randint(0,len(anonymous_proxies)-1)
         #print("random",random_number)
+        """
         for it in range(len(anonymous_proxies)):
             try:
                 proxies = {'https' : anonymous_proxies[it].get_proxy()}
@@ -80,6 +81,8 @@ def get_google_scholar_nArticles(query):
             except:
                 print(f"not number [it]")
             print(f'{it}/{len(anonymous_proxies)}')
+        """
+        response = requests.get(query)
         print("HERES WHERE IT HAPPENS!!!!!",response.status_code)
         sleep(0.5)
         if response.status_code == 200:
