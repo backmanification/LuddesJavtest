@@ -40,7 +40,12 @@ def search():
 
     # Generate pairs of search terms
     search_term_pairs = []
+    warning_mess = ''
     for i in range(len(search_terms)):
+        _,nArticles = scripts.make_url([search_terms[i],''],db)
+        print("test author",nArticles)
+        if nArticles == 0: 
+            warning_mess += f'No entries found for {search_terms[i]}\n'
         for j in range(i+1,len(search_terms)):
             if (t_ao[i]=='def' and t_ao[j]=='def') or (t_ao[i]=='opp' and t_ao[j]=='opp'): continue
             search_term_pairs.append((t_st[i],t_st[j]))
@@ -65,8 +70,10 @@ def search():
         # You can also replace the placeholder URL with the actual URL you want to display
         result[f'{pair[0]} + {pair[1]}'] = {
             'values': nArticles,
-            'url': url
+            'url': url,
+            'warning_message':warning_mess,
         }
+        warning_mess=""
 
     return jsonify(result)
 
