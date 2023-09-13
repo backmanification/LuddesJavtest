@@ -43,9 +43,10 @@ def search():
     warning_mess = ''
     for i in range(len(search_terms)):
         _,nArticles = scripts.make_url([search_terms[i],''],db)
+        print({search_terms[i]},nArticles)
         print("test author",nArticles)
-        if nArticles == 0: 
-            warning_mess += f'No entries found for {search_terms[i]}\n'
+        if int(nArticles) == 0: 
+            warning_mess += f'No entries found for {search_terms[i]} </br>'
         for j in range(i+1,len(search_terms)):
             if (t_ao[i]=='def' and t_ao[j]=='def') or (t_ao[i]=='opp' and t_ao[j]=='opp'): continue
             search_term_pairs.append((t_st[i],t_st[j]))

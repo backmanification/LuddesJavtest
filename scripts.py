@@ -104,16 +104,19 @@ def get_google_scholar_nArticles(query):
 def make_url(searchpair, db="pubmed"):
     if db == "google_scholar":
         url = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+and+author%3A%22{searchpair[1]}%22+&btnG='.replace(' ','+')
+        if searchpair[1]=='': url = f'https://scholar.google.com/scholar?hl=sv&as_sdt=0%2C5&q=author%3A%22{searchpair[0]}%22+&btnG='.replace(' ','+')
+
         #nArticles = get_google_scholar_nArticles(url)
         nArticles = get_google_scholar_nArticles_scholarly(searchpair, url)
 
     if db == "pubmed":
         #for i in range(len(searchpair)):
         #    searchpair[i] = searchpair[i].replace(' ','+')
-        query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={searchpair[0]}+and+{searchpair[1]}'
+        query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=({searchpair[0]}[Author])+and+({searchpair[1]}[Author])'.replace(' ','+')
+        if searchpair[1]=='': query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=({searchpair[0]}[Author])'.replace(' ','+')
         print(query)
-        nArticles = get_pubmed_nArticles(query.replace(' ','+'))
-        url = f'https://pubmed.ncbi.nlm.nih.gov/?term={searchpair[0]}+and+{searchpair[1]}'
+        nArticles = get_pubmed_nArticles(query)
+        url = f'https://pubmed.ncbi.nlm.nih.gov/?term=({searchpair[0]}[Author])+and+({searchpair[1]}[Author])'
         url = url.replace(' ','+')
     if db == "inspire_hep":
         url = f'https://inspirehep.net/literature?sort=mostrecent&size=25&page=1&q=find%20a%20{searchpair[0]}%20and%20a%20{searchpair[1]}'
