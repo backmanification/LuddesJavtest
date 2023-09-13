@@ -69,11 +69,18 @@ def search():
         """
         
         # You can also replace the placeholder URL with the actual URL you want to display
-        result[f'{pair[0]} + {pair[1]}'] = {
-            'values': nArticles,
-            'url': url,
-            'warning_message':warning_mess,
-        }
+        if pair[1] == '':
+            result[f'{pair[0]}'] = {
+                'values': nArticles,
+                'url': url,
+                'warning_message':warning_mess,
+            } 
+        else:
+            result[f'{pair[0]} + {pair[1]}'] = {
+                'values': nArticles,
+                'url': url,
+                'warning_message':warning_mess,
+            }
         warning_mess=""
 
     return jsonify(result)

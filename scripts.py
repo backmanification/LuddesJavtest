@@ -112,12 +112,14 @@ def make_url(searchpair, db="pubmed"):
     if db == "pubmed":
         #for i in range(len(searchpair)):
         #    searchpair[i] = searchpair[i].replace(' ','+')
-        query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=({searchpair[0]}[Author])+and+({searchpair[1]}[Author])'.replace(' ','+')
-        if searchpair[1]=='': query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=({searchpair[0]}[Author])'.replace(' ','+')
-        print(query)
-        nArticles = get_pubmed_nArticles(query)
+        query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=({searchpair[0]}[Author])+and+({searchpair[1]}[Author])'
         url = f'https://pubmed.ncbi.nlm.nih.gov/?term=({searchpair[0]}[Author])+and+({searchpair[1]}[Author])'
+        if searchpair[1]=='': 
+            query = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=({searchpair[0]}[Author])'
+            url = f'https://pubmed.ncbi.nlm.nih.gov/?term=({searchpair[0]}[Author])'
+        query = query.replace(' ','+')
         url = url.replace(' ','+')
+        nArticles = get_pubmed_nArticles(query)
     if db == "inspire_hep":
         url = f'https://inspirehep.net/literature?sort=mostrecent&size=25&page=1&q=find%20a%20{searchpair[0]}%20and%20a%20{searchpair[1]}'
 

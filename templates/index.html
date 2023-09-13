@@ -48,26 +48,36 @@
       let fieldCount = 1;
       
       // Function to add a new search field
-      function addSearchField() {
-      fieldCount++;
-      const newField = `
-      <input type="text" name="search${fieldCount}" placeholder="Enter Author ${fieldCount-1}">
-      <select name="option${fieldCount}">
-        <option value="all">Any</option>
-        <option value="opp">Opponent or Jury</option>
-        <option value="def">Defendant or Supervisor</option>
-      </select>
-      <br>`;
-      $("#search-fields").append(newField);
-      }
-      
-      // Add a new search field when the page loads
-      addSearchField();
-      
-      // Add a new search field when the "Add Field" button is clicked
-      $("#add-field").click(function () {
-      addSearchField();
-      });
+function addSearchField() {
+    fieldCount++;
+    const newField = `
+        <div class="search-field">
+            <input type="text" name="search${fieldCount}" placeholder="Enter Author">
+            <select name="option${fieldCount}">
+                <option value="all">Any</option>
+                <option value="opp">Opponent or Jury</option>
+                <option value="def">Defendant or Supervisor</option>
+            </select>
+            <button type="button" class="remove-field">Remove</button>
+            <br>
+        </div>`;
+    $("#search-fields").append(newField);
+}
+
+// Add a new search field when the page loads
+addSearchField();
+
+// Add a new search field when the "Add Field" button is clicked
+$("#add-field").click(function () {
+    addSearchField();
+});
+
+// Function to handle the removal of search fields
+$("#search-fields").on("click", ".remove-field", function () {
+    $(this).closest(".search-field").remove();
+    // You can update the fieldCount here if needed
+});
+
       
       // Function to update the warning section
       function updateWarning(result) {
@@ -148,12 +158,23 @@
     </div>
     
     <form method="post">
-      <div id="search-fields">
+    <div id="search-fields">
         <!-- Include input fields for search terms and checkboxes -->
-      </div>
-      <button type="button" id="add-field">Add Field</button>
-      <input type="submit" value="Search">
-    </form>
+        <div class="search-field">
+            <input type="text" name="search1" placeholder="Enter Author">
+            <select name="option1">
+                <option value="all">Any</option>
+                <option value="opp">Opponent or Jury</option>
+                <option value="def">Defendant or Supervisor</option>
+            </select>
+            <button type="button" class="remove-field">Remove</button>
+            <br>
+        </div>
+    </div>
+    <button type="button" id="add-field">Add Field</button>
+    <input type="submit" value="Search">
+</form>
+
     
     <!-- Results Section -->
     <h2>Results:</h2>
