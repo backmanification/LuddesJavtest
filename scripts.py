@@ -3,7 +3,7 @@ import requests
 import random as rd
 from time import sleep
 from time import time
-
+import json
 #from scholarly import scholarly
 #from scholarly import ProxyGenerator
 """
@@ -48,6 +48,24 @@ def get_pubmed_nArticles(query):
     except:
         nArticles = source_code
     return nArticles
+
+def get_inspirehep_source(query, count=0):
+    tid = time()
+    response = requests.get(query)
+    #print("response time", time()-tid)
+    #print("status code", response.status_code)
+    if response.status_code == 200:
+        return json.loads(response.text)
+    else:
+        if count > 2: return f'Error {response.status_code}'
+        sleep(5)
+        return get_inspirehep_source(query, count+1)
+    return "Unknown Error"
+
+def get_inspirehep_nArticles(query):
+    json_source = get_inspirehep_source(query)
+    return json_source['hits']['total'] 
+
 
 def get_google_scholar_nArticles_scholarly(pair,url):
     #print("lego")
@@ -123,7 +141,14 @@ def make_url(searchpair, db="pubmed"):
         url = url.replace(' ','+')
         nArticles = get_pubmed_nArticles(query)
     if db == "inspire_hep":
-        url = f'https://inspirehep.net/literature?sort=mostrecent&size=25&page=1&q=find%20a%20{searchpair[0]}%20and%20a%20{searchpair[1]}'
+        url = f'https://inspirehep.net/literature?q=find+a+{searchpair[0]}+and+a+{searchpair[1]}'
+        query = f'https://inspirehep.net/api/literature?q=find+a+{searchpair[0]}+and+a+{searchpair[1]}'
+        if searchpair[1]=='':
+            url = f'https://inspirehep.net/literature?q=find+a+{searchpair[0]}'
+            query = f'https://inspirehep.net/api/literature?q=find+a+{searchpair[0]}'
+        query = query.replace(' ','+')
+        url = url.replace(' ','+')
+        nArticles = get_inspirehep_nArticles(query)
     #print(f'{searchpair} took {time()-start_t} to process')
     return url,nArticles
 
