@@ -1,43 +1,71 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Search Words</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+      /* Add this to your existing CSS styles */
+      #loader {
+        display: none;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 2s linear infinite;
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
 
-        table, th, td {
-            border: 1px solid black;
-        }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
 
-        .search-options {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      table, th, td {
+        border: 1px solid black;
+      }
+
+      .search-options {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
     </style>
-<script>
-    $(document).ready(function () {
+    <script>
+
+      let dataTable; // Declare dataTable outside of the document.ready function
+
+      $(document).ready(function () {
         let fieldCount = 1;
 
         // Function to add a new search field
         function addSearchField() {
-            fieldCount++;
-            const newField = `
-                <input type="text" name="search${fieldCount}" placeholder="Enter Author ${fieldCount-1}">
-                <select name="option${fieldCount}">
-                    <option value="all">Any</option>
-                    <option value="opp">Opponent or Jury</option>
-                    <option value="def">Defendant or Supervisor</option>
-                </select>
-                <br>`;
-            $("#search-fields").append(newField);
+          fieldCount++;
+          const newField = `
+            <div class="search-field">
+              <input type="text" name="search${fieldCount}" placeholder="Enter Author">
+              <select name="option${fieldCount}">
+                <option value="all">Any</option>
+                <option value="opp">Opponent or Jury</option>
+                <option value="def">Defendant or Supervisor</option>
+              </select>
+              <button type="button" class="remove-field">Remove</button>
+              <br>
+            </div>`;
+          $("#search-fields").append(newField);
         }
 
         // Add a new search field when the page loads
@@ -45,75 +73,152 @@
 
         // Add a new search field when the "Add Field" button is clicked
         $("#add-field").click(function () {
-            addSearchField();
+          addSearchField();
         });
+
+        // Function to handle the removal of search fields
+        $("#search-fields").on("click", ".remove-field", function () {
+          $(this).closest(".search-field").remove();
+          // You can update the fieldCount here if needed
+        });
+
+        // Initialize DataTable for results table
+        dataTable = $("#results-table").DataTable({
+          ordering: true, // Enable sorting
+          order: [[1, "desc"]], // Default sorting by the 2nd column (Shared Papers) in descending order
+          searching: false, // Disable search bar
+          columnDefs: [
+            { width: "25%", targets: 0 },
+            { width: "10%", targets: 1 },   // Set the second column to 50% width
+            { width: "50%", targets: 2 }   // Set the third column to 150% width
+          ]
+        });
+
+        // Function to update the warning section
+        function updateWarning(result) {
+          var $warningMessage = $("#warning-message");
+          $warningMessage.empty();
+          $.each(result, function(pair, search_result) {
+            if (search_result.warning_message) {
+              $warningMessage.append(search_result.warning_message);
+            }
+          });
+        }
 
         // Function to update the results section
         function updateResults(result) {
-            var $resultsTable = $("#results-table");
-            $resultsTable.empty();
-            $resultsTable.append('<tr><th>Authors</th><th>Shared Papers</th><th>Full URL</th></tr>');                                      
-            $.each(result, function(pair, search_result) {
-                $resultsTable.append('<tr>' +
-                    '<td>' + pair + '</td>' +
-                    '<td>' + search_result.values + '</td>' +
-                    '<td><a href="' + search_result.url + '" target="_blank">' + search_result.url + '</a></td>' +
-                '</tr>');
-            });
+          var $resultsTable = $("#results-table");
+          $resultsTable.empty();
+          $resultsTable.append('<thead><tr><th>Authors</th><th>Shared Papers</th><th>Full URL</th></tr></thead>');
+          const tableBody = document.createElement("tbody");
+          $.each(result, function(pair, search_result) {
+            const row = createRow(pair, search_result);
+            tableBody.appendChild(row);
+          });
+          $resultsTable.append(tableBody);
+          dataTable.destroy(); // Destroy the previous DataTable
+          dataTable = $("#results-table").DataTable({
+            ordering: true,
+            order: [[1, "desc"]],
+            searching: false,
+          });
+        }
+
+        // Function to create a table row
+        function createRow(pair, search_result) {
+          const row = document.createElement("tr");
+          const authorsCell = document.createElement("td");
+          authorsCell.innerText = pair;
+          const sharedPapersCell = document.createElement("td");
+          sharedPapersCell.innerText = search_result.values;
+          const urlCell = document.createElement("td");
+          const link = document.createElement("a");
+          link.href = search_result.url;
+          link.target = "_blank";
+          link.innerText = search_result.url;
+          urlCell.appendChild(link);
+          row.appendChild(authorsCell);
+          row.appendChild(sharedPapersCell);
+          row.appendChild(urlCell);
+          return row;
         }
 
         // Handle form submission using AJAX
         $("form").submit(function (event) {
-            event.preventDefault(); // Prevent the default form submission
+          event.preventDefault();
 
-            // Serialize form data
-            const formData = $(this).serialize();
+          const formData = $(this).serialize();
+          const selectedOption = $(".search-options select[name='search-option']").val();
+          const modifiedFormData = formData + `&search-option=${selectedOption}`;
 
-            // Get the selected search option
-            const selectedOption = $(".search-options select[name='search-option']").val();
-
-            // Append the selected search-option to the form data
-            const modifiedFormData = formData + `&search-option=${selectedOption}`;
-
-            $.ajax({
-                type: 'POST',
-                url: '/search',
-                data: modifiedFormData,
-                success: function (result) {
-                    // Update the results section
-                    updateResults(result);
-                }
-            });
+          $.ajax({
+            type: 'POST',
+            url: '/search',
+            data: modifiedFormData,
+            beforeSend: function () {
+              $("#loader").show();
+            },
+            success: function (result) {
+              updateResults(result);
+              updateWarning(result);
+            },
+            complete: function () {
+              // Hide the loader when the AJAX request is complete
+              $("#loader").hide();
+            }
+          });
         });
-    });
-</script>
-</head>
-<body>
+      });
+    </script>
+  </head>
+  <body>
     <h1>Search Words</h1>
-
+    
     <!-- Search Options -->
     <div class="search-options">
-        <label>Search Options:</label>
-        <select name="search-option">
-            <option value="pubmed">PubMed</option>
-            <option value="google_scholar">Google Scholar (in progress)</option>
-            <option value="inspire_hep">Inspire HEP (in progress)</option>
-            <option value="arxiv">arXiv (in progress)</option>
-        </select>
+      <label>Search Options:</label>
+      <select name="search-option">
+        <option value="pubmed">PubMed</option>
+        <option value="google_scholar">Google Scholar (in progress)</option>
+        <option value="inspire_hep">Inspire HEP</option>
+        <option value="arxiv">arXiv (in progress)</option>
+      </select>
     </div>
-
+    
     <form method="post">
-        <div id="search-fields">
-            <!-- Include input fields for search terms and checkboxes -->
+    <div id="search-fields">
+        <!-- Include input fields for search terms and checkboxes -->
+        <div class="search-field">
+            <input type="text" name="search1" placeholder="Enter Author">
+            <select name="option1">
+                <option value="all">Any</option>
+                <option value="opp">Opponent or Jury</option>
+                <option value="def">Defendant or Supervisor</option>
+            </select>
+            <button type="button" class="remove-field">Remove</button>
+            <br>
         </div>
-        <button type="button" id="add-field">Add Field</button>
-        <input type="submit" value="Search">
-    </form>
+    </div>
+    <button type="button" id="add-field">Add Field</button>
+    <input type="submit" value="Search">
+</form>
 
     <!-- Results Section -->
     <h2>Results:</h2>
-    <table id="results-table">
+    <text id="warning-message"> </text>
+    <div id="loader" style="display: none;"></div>
+    <table id="results-table" class="display">
+      <thead>
+        <tr>
+          <th>Authors</th>
+          <th>Shared Papers</th>
+          <th>Full URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be added dynamically here -->
+      </tbody>
     </table>
-
-</body>
+    
+  </body>
 </html>
